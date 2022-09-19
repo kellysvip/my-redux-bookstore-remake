@@ -8,7 +8,7 @@ const initialState = {
   status: null,
 };
 
-export const fetchBooks = async ({ pageNum, limit, query }) => {
+const fetchBooks = async ({ pageNum, limit, query }) => {
   try {
     let url = `/books?_page=${pageNum}&_limit=${limit}`;
     if (query) url += `&q=${query}`;
@@ -19,13 +19,13 @@ export const fetchBooks = async ({ pageNum, limit, query }) => {
   }
 };
 
-export const fetchData = createAsyncThunk("book/fetchData", async (props) => {
+export const fetchData = createAsyncThunk("books/fetchData", async (props) => {
   const res = await fetchBooks(props);
   return res.data;
 });
 
 export const getBookDetail = createAsyncThunk(
-  "book/getBookDetail",
+  "books/getBookDetail",
   async (bookId) => {
     const res = await API.get(`/books/${bookId}`);
     return res.data;
@@ -33,7 +33,7 @@ export const getBookDetail = createAsyncThunk(
 );
 
 export const removeBook = createAsyncThunk(
-  "book/removeBook",
+  "books/removeBook",
   async (removeBookId) => {
     const res = await API.delete(`/favorites/${removeBookId}`);
     return res.data;
@@ -41,7 +41,7 @@ export const removeBook = createAsyncThunk(
 );
 
 export const getReadingList = createAsyncThunk(
-  "book/getReadingList",
+  "books/getReadingList",
   async () => {
     const res = await API.get(`/favorites`);
     return res.data;
@@ -49,9 +49,10 @@ export const getReadingList = createAsyncThunk(
 );
 
 export const addToReadingList = createAsyncThunk(
-  "book/addToReadingList",
+  "books/addToReadingList",
   async (book) => {
     const res = await API.post(`/favorites`, book);
+    return res.data
   }
 );
 
@@ -94,11 +95,11 @@ export const bookSlice = createSlice({
       });
     builder
       .addCase(addToReadingList.pending, () => {})
-      .addCase(addToReadingList.fulfilled, () => {
+      .addCase(addToReadingList.fulfilled, (state) => {
         state.status = null;
         toast.success("The book has been added to the reading list!");
       })
-      .addCase(addToReadingList.rejected, () => {
+      .addCase(addToReadingList.rejected, (action) => {
         toast.error(action.error.message);
       });
     builder
@@ -115,3 +116,5 @@ export const bookSlice = createSlice({
       });
   },
 });
+
+export default bookSlice.reducer;
