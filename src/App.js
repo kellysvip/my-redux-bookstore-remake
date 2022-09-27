@@ -7,7 +7,6 @@ import NotFoundPage from "./pages/NotFoundPage";
 import BookDetailPage from "./pages/BookDetailPage";
 import PublicLayout from "./layout/PublicLayout";
 import MThemeProvider from "./theme/MThemeProvider";
-import { Counter } from './features/counter/Counter';
 function App() {
   return (
     <BrowserRouter>
